@@ -75,11 +75,15 @@ WSGI_APPLICATION = 'foodcourtproject.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
+  
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+    
+
 
 
 # Password validation
@@ -124,3 +128,14 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True  # Use TLS on port 587
+EMAIL_USE_SSL = False  # Do NOT enable SSL with TLS
+EMAIL_HOST_USER = 'jincydhiya2022@gmail.com'  # Your Gmail address
+EMAIL_HOST_PASSWORD = 'uper gfeb zecy yvzi'  # Gmail App Password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+

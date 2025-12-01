@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Register</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: "Open Sans", sans-serif;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #f2f4f8;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(20, 30, 50, 0.08);
+      width: 380px;
+    }
+
+    h2 {
+      margin: 0 0 18px 0;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    .input-row {
+      margin-bottom: 14px;
+      position: relative;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"],
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid #d8dee7;
+      font-size: 15px;
+      box-sizing: border-box;
+      font-family: "Open Sans", sans-serif;
+    }
+
+    textarea {
+      height: 80px;
+      resize: none;
+    }
+
+    .toggle-btn {
+      position: absolute;
+      right: 12px;
+      top: 37px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 16px;
+      background: #d4a762;
+      color: white;
+      border-radius: 8px;
+      width: 100%;
+      text-align: center;
+      font-weight: 600;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background: #c2924f;
+    }
+
+    .login-link {
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .login-link a {
+      text-decoration: none;
+      color: #d4a762;
+      font-weight: 700;
+    }
+
+    .login-link a:hover {
+      color: #b88444;
+    }
+
+    .msg {
+      text-align: center;
+      color: red;
+      margin-bottom: 10px;
+    }
+  </style>
+
+</head>
+<body>
+
+  <form class="card" method="POST">
+    {% csrf_token %}
+    <h2>Create Account</h2>
+
+    <!-- Display Messages -->
+    {% for message in messages %}
+      <p class="msg">{{ message }}</p>
+    {% endfor %}
+
+    <div class="input-row">
+      <label>Name</label>
+      <input type="text" name="name" required>
+    </div>
+
+    <div class="input-row">
+      <label>Date of Birth</label>
+      <input type="date" name="dob" required>
+    </div>
+
+    <div class="input-row">
+      <label>Email</label>
+      <input type="email" name="email" required>
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="input-row">
+      <label>Password</label>
+      <input id="password" name="password" type="password" required />
+      <button type="button" class="toggle-btn" onclick="togglePassword('password', this)">👁️</button>
+    </div>
+
+    <!-- CONFIRM PASSWORD -->
+    <div class="input-row">
+      <label>Confirm Password</label>
+      <input id="confirm_password" name="confirm_password" type="password" required />
+      <button type="button" class="toggle-btn" onclick="togglePassword('confirm_password', this)">👁️</button>
+    </div>
+
+    <div class="input-row">
+      <label>Address</label>
+      <textarea name="address" required></textarea>
+    </div>
+
+    <button type="submit" class="btn">Register</button>
+
+    <div class="login-link">
+      <p>Already have an account?
+        <a href="{% url 'login' %}">Login</a>
+      </p>
+    </div>
+
+  </form>
+
+  <script>
+    function togglePassword(fieldId, btn) {
+      const input = document.getElementById(fieldId);
+      const hidden = input.type === "password";
+      input.type = hidden ? "text" : "password";
+      btn.textContent = hidden ? "🙈" : "👁️";
+    }
+  </script>
+
+</body>
+</html>

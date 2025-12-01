@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTP Verification</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .otp-container {
+      background-color: #fff;
+      padding: 30px 25px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 300px;
+    }
+
+    .otp-container h2 {
+      color: #d4a762;
+      margin-bottom: 20px;
+    }
+
+    .otp-container input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .otp-container button {
+      width: 100%;
+      padding: 10px;
+      background-color: #d4a762;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .otp-container button:hover {
+      background-color: #c29f58;
+    }
+
+    .otp-container p {
+      color: red;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="otp-container">
+    <h2>Enter OTP</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <input type="text" name="otp" placeholder="Enter 6-digit OTP" required>
+      <button type="submit">Verify OTP</button>
+    </form>
+
+    {% if msg %}
+      <p>{{ msg }}</p>
+    {% endif %}
+  </div>
+
+</body>
+</html>
