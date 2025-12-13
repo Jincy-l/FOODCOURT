@@ -141,3 +141,7 @@ def verify_otp(request):
 def logout_view(request):
     request.session.flush()
     return redirect("login")
+def dashboard(request):
+    return render(request, "dashboard.html")
+def admin_dashboard(request):
+    return render(request,"admin_dashboard.html")

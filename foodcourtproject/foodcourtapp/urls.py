@@ -8,6 +8,9 @@ urlpatterns = [
    path('register/',views.register, name='register'),
    path('verify-otp/', views.verify_otp, name='verify_otp'),
    path('logout/', views.logout_view, name="logout"),
+   path('dashboard/', views.dashboard, name="dashboard"),
+   path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
+   
    
 ]
 
