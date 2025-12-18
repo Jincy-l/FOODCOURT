@@ -3,6 +3,7 @@ from django.core.mail import send_mail
 from django.contrib import messages
 from django.utils import timezone
 import random
+from .models import Booking
 
 from .models import Register, OTP
 
@@ -144,4 +145,26 @@ def logout_view(request):
 def dashboard(request):
     return render(request, "dashboard.html")
 def admin_dashboard(request):
-    return render(request,"admin_dashboard.html")
+     total_booking = Booking.objects.count()
+
+     context = {
+        'total_booking': total_booking
+     }
+     return render(request,"admin_dashboard.html")
+def book_service(request):
+    if request.method == "POST":
+        Booking.objects.create(
+            country=request.POST.get('country'),
+            city=request.POST.get('city'),
+            palace=request.POST.get('palace'),
+            event_type=request.POST.get('event_type'),
+            number_of_palace=request.POST.get('number_of_palace'),
+            food_type=request.POST.get('food_type'),
+            contact_number=request.POST.get('contact_number'),
+            email=request.POST.get('email'),
+            event_date=request.POST.get('event_date'),
+        )
+        messages.success(request, "Your booking has been successfully completed!")
+
+        return redirect('book_service')
+    return render(request, 'home.html')
