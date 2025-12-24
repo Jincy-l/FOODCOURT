@@ -8,9 +8,12 @@ urlpatterns = [
    path('register/',views.register, name='register'),
    path('verify-otp/', views.verify_otp, name='verify_otp'),
    path('logout/', views.logout_view, name="logout"),
-   path('dashboard/', views.dashboard, name="dashboard"),
+   path('starter/', views.starter, name="starter"),
    path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
-   
+   path('drinks/', views.drinks, name='drinks'),
+   path('ourspecial/', views.ourspecial, name='ourspecial'),
+   path('offers/', views.offers, name='offers'),
+   path('maincourse/', views.maincourse, name='maincourse'),
    
 ]
 

@@ -181,6 +181,37 @@ body{
   .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border)}
 }
 
+/* ===== Category Buttons ===== */
+.categories{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-bottom:22px;
+}
+
+.cat-btn{
+  padding:12px 20px;
+  border:none;
+  border-radius:10px;
+  background:rgba(212,167,98,.15);
+  color:#111;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .25s ease;
+}
+
+.cat-btn:hover{
+  background:var(--accent);
+  color:#fff;
+  transform:translateY(-2px);
+  box-shadow:0 6px 14px rgba(0,0,0,.12);
+}
+
+.cat-btn.active{
+  background:var(--accent);
+  color:#fff;
+}
 
   </style>
 </head>
@@ -256,10 +287,24 @@ body{
     <p>Total Revenue</p>
   </div>
 </section>
+<!-- Category Buttons -->
+<br>
+<br>
+<div>
+<section class="categories">
+  <a href="starter.html"><button class="cat-btn active">Starter</button></a>
+  <a href="maincourse.html"><button class="cat-btn">Main Course</button></a>
+  <a href="drinks.html"><button class="cat-btn">Drinks</button></a>
+  <a href="offers.html"><button class="cat-btn">Offers</button></a>
+  <a href="ourspecial.html"><button class="cat-btn">Our Specials</button></a>
+</section>
+
 
 
   </main>
+  
 </div>
+
 
 <script>
   const users = JSON.parse(localStorage.getItem('users_v1')) || [];
@@ -267,6 +312,16 @@ body{
 
   document.getElementById('userCount').textContent = users.length;
   document.getElementById('foodCount').textContent = foods.length;
+</script>
+<script>
+  const buttons = document.querySelectorAll('.cat-btn');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
 </script>
 
 </body>

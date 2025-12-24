@@ -12,7 +12,22 @@ from .models import Register, OTP
 # HOME PAGE
 # --------------------------
 def home(request):
-    return render(request, "home.html")
+     if request.method == "POST":
+        Booking.objects.create(
+            country=request.POST.get('country'),
+            city=request.POST.get('city'),
+            palace=request.POST.get('palace'),
+            event_type=request.POST.get('event_type'),
+            number_of_palace=request.POST.get('number_of_palace'),
+            food_type=request.POST.get('food_type'),
+            contact_number=request.POST.get('contact_number'),
+            email=request.POST.get('email'),
+            event_date=request.POST.get('event_date'),
+        )
+        messages.success(request, "Your booking has been successfully completed!")
+
+    
+     return render(request, "home.html")
 
 
 # --------------------------
@@ -142,29 +157,21 @@ def verify_otp(request):
 def logout_view(request):
     request.session.flush()
     return redirect("login")
-def dashboard(request):
-    return render(request, "dashboard.html")
+
 def admin_dashboard(request):
      total_booking = Booking.objects.count()
 
      context = {
         'total_booking': total_booking
      }
-     return render(request,"admin_dashboard.html")
-def book_service(request):
-    if request.method == "POST":
-        Booking.objects.create(
-            country=request.POST.get('country'),
-            city=request.POST.get('city'),
-            palace=request.POST.get('palace'),
-            event_type=request.POST.get('event_type'),
-            number_of_palace=request.POST.get('number_of_palace'),
-            food_type=request.POST.get('food_type'),
-            contact_number=request.POST.get('contact_number'),
-            email=request.POST.get('email'),
-            event_date=request.POST.get('event_date'),
-        )
-        messages.success(request, "Your booking has been successfully completed!")
-
-        return redirect('book_service')
-    return render(request, 'home.html')
+     return render(request,"admin_dashboard.html",context)
+def drinks(request):
+    return render(request, "drinks.html")
+def maincourse(request):
+    return render(request, "maincourse.html")
+def offers(request):
+    return render(request, "offers.html")
+def ourspecial(request):
+    return render(request, "ourspecial.html")
+def starter(request):
+    return render(request, "starter.html")

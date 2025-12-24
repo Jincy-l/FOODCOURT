@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simple Food Dashboard</title>
+  <style>
+    :root{ --accent:#d4a762; --bg:#f7f6f2; --card:#ffffff; --muted:#6b6b6b; }
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial; margin:0; background:var(--bg); color:#222}
+    .wrap{max-width:1100px;margin:28px auto;padding:18px}
+
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#b79f46);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+    h1{font-size:20px;margin:0}
+    p.lead{margin:0;color:var(--muted)}
+
+    .layout{display:grid;grid-template-columns:360px 1fr;gap:18px}
+
+    /* left form */
+    .card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(20,20,20,0.06)}
+    form .field{margin-bottom:12px}
+    label{display:block;font-size:13px;margin-bottom:6px;color:var(--muted)}
+    input[type="text"], input[type="number"], textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e8e8e8;font-size:14px}
+    textarea{min-height:80px;resize:vertical}
+
+    .img-preview{width:100%;height:160px;border-radius:10px;border:1px dashed #dedede;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fafafa}
+    .img-preview img{max-width:100%;max-height:100%;object-fit:cover}
+
+    .actions{display:flex;gap:8px;align-items:center;margin-top:8px}
+    button{cursor:pointer;border:0;padding:10px 12px;border-radius:10px;font-weight:600}
+    .btn-accent{background:var(--accent);color:#fff}
+    .btn-ghost{background:transparent;border:1px solid #ddd;color:#333}
+
+    /* table area */
+    .table-wrap{overflow:auto}
+    table{width:100%;border-collapse:collapse;background:transparent}
+    th,td{padding:12px 10px;text-align:left;border-bottom:1px solid #eee;vertical-align:middle}
+    th{font-size:13px;color:var(--muted)}
+    td img.thumb{width:64px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #eee}
+    .price{font-weight:700}
+    .muted{color:var(--muted);font-size:13px}
+    .btn-sm{padding:6px 8px;border-radius:8px;font-size:13px}
+    .btn-edit{background:#fff;border:1px solid #d4a762;color:var(--accent)}
+    .btn-delete{background:#fff;border:1px solid #f2a2a2;color:#c94b4b}
+
+    @media (max-width:880px){.layout{grid-template-columns:1fr} .img-preview{height:140px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">FC</div>
+      <div>
+        <h1>Starters
+        </h1>
+        {% comment %} <p class="lead">Add food items — image, name, price, details. Update, edit and delete. Theme color: <strong>#d4a762</strong></p> {% endcomment %}
+      </div>
+    </header>
+
+    <div class="layout">
+      <div class="card">
+        <form id="foodForm">
+          <input type="hidden" id="editingId" value="">
+
+          <div class="field">
+            <label for="imageInput">Food image</label>
+            <div class="img-preview" id="imgPreview">Drop or choose an image</div>
+            <input type="file" id="imageInput" accept="image/*" style="margin-top:8px">
+          </div>
+
+          <div class="field">
+            <label for="nameInput">Food name</label>
+            <input id="nameInput" type="text" placeholder="e.g., Masala Dosa" required>
+          </div>
+
+          <div class="field">
+            <label for="priceInput">Price (₹)</label>
+            <input id="priceInput" type="number" step="0.01" placeholder="e.g., 120" required>
+          </div>
+
+          <div class="field">
+            <label for="detailsInput">Details</label>
+            <textarea id="detailsInput" placeholder="Short description..."></textarea>
+          </div>
+
+          <div class="actions">
+            <button type="submit" id="saveBtn" class="btn-accent">Add food</button>
+            <button type="button" id="clearBtn" class="btn-ghost">Clear</button>
+            <div style="margin-left:auto;color:var(--muted);font-size:13px">Items: <span id="count">0</span></div>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table id="foodsTable">
+            <thead>
+              <tr><th>Image</th><th>Name</th><th>Price</th><th>Details</th><th>Actions</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simple dashboard with localStorage persistence
+    const form = document.getElementById('foodForm');
+    const imageInput = document.getElementById('imageInput');
+    const imgPreview = document.getElementById('imgPreview');
+    const nameInput = document.getElementById('nameInput');
+    const priceInput = document.getElementById('priceInput');
+    const detailsInput = document.getElementById('detailsInput');
+    const foodsTableBody = document.querySelector('#foodsTable tbody');
+    const countSpan = document.getElementById('count');
+    const editingIdInput = document.getElementById('editingId');
+    const saveBtn = document.getElementById('saveBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    let foods = [];
+    let currentImageData = null; // dataURL
+
+    // utils
+    function uid(){return 'id_'+Date.now()+'_'+Math.floor(Math.random()*9999)}
+
+    function render(){
+      foodsTableBody.innerHTML = '';
+      foods.forEach(item =>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><img class="thumb" src="${item.image}" alt=""></td>
+          <td>${escapeHtml(item.name)}</td>
+          <td class="price">₹ ${Number(item.price).toFixed(2)}</td>
+          <td class="muted">${escapeHtml(item.details||'—')}</td>
+          <td>
+            <button class="btn-sm btn-edit" data-id="${item.id}">Edit</button>
+            <button class="btn-sm btn-delete" data-id="${item.id}">Delete</button>
+          </td>`;
+        foodsTableBody.appendChild(tr);
+      });
+      countSpan.textContent = foods.length;
+    }
+
+    function escapeHtml(str){ if(!str) return ''; return str.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;') }
+
+    function saveToStorage(){ localStorage.setItem('food_items_v1', JSON.stringify(foods)); }
+    function loadFromStorage(){ try{foods = JSON.parse(localStorage.getItem('food_items_v1'))||[];}catch(e){foods=[]} }
+
+    // initial load
+    loadFromStorage(); render();
+
+    // image input handling
+    imageInput.addEventListener('change', async (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      const data = await readFileAsDataURL(file);
+      currentImageData = data;
+      imgPreview.innerHTML = `<img src="${data}" alt="preview">`;
+    });
+
+    // drag & drop image
+    ['dragenter','dragover'].forEach(ev=>{
+      imgPreview.addEventListener(ev, e=>{ e.preventDefault(); imgPreview.style.borderColor = 'var(--accent)'; });
+    });
+    ['dragleave','drop'].forEach(ev=>{
+      imgPreview.addEventListener(ev, e=>{ e.preventDefault(); imgPreview.style.borderColor = '#dedede'; });
+    });
+    imgPreview.addEventListener('drop', async (e)=>{
+      const file = e.dataTransfer.files[0];
+      if(!file) return;
+      const data = await readFileAsDataURL(file);
+      currentImageData = data;
+      imgPreview.innerHTML = `<img src="${data}" alt="preview">`;
+    });
+
+    function readFileAsDataURL(file){
+      return new Promise((res,rej)=>{
+        const r = new FileReader(); r.onload = ()=>res(r.result); r.onerror = rej; r.readAsDataURL(file);
+      })
+    }
+
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const name = nameInput.value.trim();
+      const price = priceInput.value;
+      const details = detailsInput.value.trim();
+      if(!name || !price) return alert('Please provide name and price.');
+
+      const editingId = editingIdInput.value;
+
+      if(editingId){
+        // update
+        const idx = foods.findIndex(f=>f.id===editingId);
+        if(idx>-1){
+          foods[idx].name = name; foods[idx].price = price; foods[idx].details = details;
+          if(currentImageData) foods[idx].image = currentImageData;
+          saveToStorage(); loadFromStorage(); render();
+          resetForm();
+          return;
+        }
+      }
+
+      // new
+      const item = { id: uid(), name, price, details, image: currentImageData || placeholderData() };
+      foods.unshift(item);
+      saveToStorage(); loadFromStorage(); render();
+      resetForm();
+    });
+
+    // edit / delete actions
+    foodsTableBody.addEventListener('click', (e)=>{
+      const id = e.target.dataset.id;
+      if(!id) return;
+      if(e.target.classList.contains('btn-edit')){
+        const item = foods.find(f=>f.id===id); if(!item) return;
+        editingIdInput.value = item.id;
+        nameInput.value = item.name;
+        priceInput.value = item.price;
+        detailsInput.value = item.details || '';
+        currentImageData = item.image;
+        imgPreview.innerHTML = `<img src="${item.image}" alt="preview">`;
+        saveBtn.textContent = 'Update item';
+      }
+      if(e.target.classList.contains('btn-delete')){
+        if(!confirm('Delete this item?')) return;
+        foods = foods.filter(f=>f.id!==id);
+        saveToStorage(); loadFromStorage(); render();
+      }
+    });
+
+    clearBtn.addEventListener('click', ()=>{
+      if(confirm('Clear form?')) resetForm();
+    });
+
+    function resetForm(){
+      form.reset(); currentImageData = null; imgPreview.textContent = 'Drop or choose an image'; editingIdInput.value=''; saveBtn.textContent = 'Add food';
+    }
+
+    function placeholderData(){
+      // simple SVG dataURL placeholder
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect width='100%' height='100%' fill='%23f0f0f0'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23bdbdbd' font-family='Arial' font-size='24'>No image</text></svg>`;
+      return 'data:image/svg+xml;base64,' + btoa(svg);
+    }
+
+    // small UX: double-click row to copy price
+    foodsTableBody.addEventListener('dblclick', (e)=>{
+      const td = e.target.closest('td'); if(!td) return;
+      const tr = td.parentElement; const name = tr.children[1].textContent;
+      // noop for now
+    });
+
+  </script>
+</body>
+</html>

@@ -1007,7 +1007,7 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="menu-item d-flex align-items-center">
-                                        <img class="flex-shrink-0 img-fluid rounded-circle" src="{% static 'img/menu-09.jpg" alt="">
+                                        <img class="flex-shrink-0 img-fluid rounded-circle" src="{% static 'img/menu-09.jpg' %}" alt="">
                                         <div class="w-100 d-flex flex-column text-start ps-4">
                                             <div class="d-flex justify-content-between border-bottom border-primary pb-2 mb-2">
                                                 <h4>Pizza</h4>
@@ -1087,7 +1087,7 @@
 
 
         <!-- Book Us Start -->
-<form method="POST" action="{% url 'book_service' %}">
+<form method="POST" action="{% url 'home' %}">
     {% csrf_token %}
 
 <div class="container-fluid contact py-6 wow bounceInUp" data-wow-delay="0.1s">
