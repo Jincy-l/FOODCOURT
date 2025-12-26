@@ -6,6 +6,8 @@ import random
 from .models import Booking
 
 from .models import Register, OTP
+from .models import StarterFood
+from django.shortcuts import render, redirect, get_object_or_404
 
 
 # --------------------------
@@ -174,4 +176,21 @@ def offers(request):
 def ourspecial(request):
     return render(request, "ourspecial.html")
 def starter(request):
-    return render(request, "starter.html")
+    
+    if request.method == "POST":
+        StarterFood.objects.create(
+            name=request.POST.get('name'),
+            price=request.POST.get('price'),
+            details=request.POST.get('details'),
+            image=request.FILES.get('image')
+        )
+        return redirect('starter')
+
+    foods = StarterFood.objects.all().order_by('-id')
+    return render(request, 'starter.html', {'foods': foods})
+def delete_starter(request, id):
+    food = get_object_or_404(StarterFood, id=id)
+    food.delete()
+    return redirect('starter')
+
+    

@@ -292,11 +292,11 @@ body{
 <br>
 <div>
 <section class="categories">
-  <a href="starter.html"><button class="cat-btn active">Starter</button></a>
-  <a href="maincourse.html"><button class="cat-btn">Main Course</button></a>
-  <a href="drinks.html"><button class="cat-btn">Drinks</button></a>
-  <a href="offers.html"><button class="cat-btn">Offers</button></a>
-  <a href="ourspecial.html"><button class="cat-btn">Our Specials</button></a>
+  <a href="{% url 'starter' %}"><button class="cat-btn active">Starter</button></a>
+  <a href="{% url 'maincourse' %}"><button class="cat-btn">Main Course</button></a>
+  <a href="{% url 'drinks' %}"><button class="cat-btn">Drinks</button></a>
+  <a href="{% url 'offers' %}"><button class="cat-btn">Offers</button></a>
+  <a href="{% url 'ourspecial' %}"><button class="cat-btn">Our Specials</button></a>
 </section>
 
 
