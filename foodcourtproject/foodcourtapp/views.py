@@ -14,7 +14,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 # HOME PAGE
 # --------------------------
 def home(request):
-     if request.method == "POST":
+    if request.method == "POST":
         Booking.objects.create(
             country=request.POST.get('country'),
             city=request.POST.get('city'),
@@ -28,8 +28,15 @@ def home(request):
         )
         messages.success(request, "Your booking has been successfully completed!")
 
+    # Fetch starter food data (always runs)
+    starters = StarterFood.objects.all()
+
+    return render(request, 'home.html', {
+        'starters': starters
+    })
+
     
-     return render(request, "home.html")
+    
 
 
 # --------------------------
