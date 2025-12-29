@@ -7,6 +7,7 @@ from .models import Booking
 
 from .models import Register, OTP
 from .models import StarterFood
+from .models import Drink
 from django.shortcuts import render, redirect, get_object_or_404
 
 
@@ -30,9 +31,11 @@ def home(request):
 
     # Fetch starter food data (always runs)
     starters = StarterFood.objects.all()
+    drinks= Drink.objects.all()
 
     return render(request, 'home.html', {
         'starters': starters
+        
     })
 
     

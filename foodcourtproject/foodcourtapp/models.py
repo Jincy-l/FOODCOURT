@@ -72,3 +72,38 @@ class StarterFood(models.Model):
 
     def __str__(self):
         return self.name
+from django.db import models
+
+class Drink(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    details = models.TextField(blank=True)
+    image = models.ImageField(upload_to='drinks/')
+
+    def __str__(self):
+        return self.name
+class Maincourse(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    details = models.TextField(blank=True)
+    image = models.ImageField(upload_to='maincourses/')
+
+    def __str__(self):
+        return self.name
+class Offers(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    details = models.TextField(blank=True)
+    image = models.ImageField(upload_to='offers/')
+
+    def __str__(self):
+        return self.name
+    
+class Ourspecial(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    details = models.TextField(blank=True)
+    image = models.ImageField(upload_to='ourspecials/')
+
+    def __str__(self):
+        return self.name    
